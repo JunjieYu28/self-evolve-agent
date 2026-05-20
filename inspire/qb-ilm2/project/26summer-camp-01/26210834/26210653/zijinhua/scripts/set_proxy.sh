@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# 代理配置（按实际代理地址修改）
+# 若无代理需求可留空或注释掉
+export http_proxy="${http_proxy:-http://127.0.0.1:7890}"
+export https_proxy="${https_proxy:-http://127.0.0.1:7890}"
+export HTTP_PROXY="${http_proxy}"
+export HTTPS_PROXY="${https_proxy}"
+export no_proxy="localhost,127.0.0.1,::1"
+export NO_PROXY="${no_proxy}"

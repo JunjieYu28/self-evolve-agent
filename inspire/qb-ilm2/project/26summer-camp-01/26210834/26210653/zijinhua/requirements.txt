@@ -1,0 +1,38 @@
+# 自进化 VQA Agent — Python 依赖（与 conda env `zijinhua` 对齐，2026-05）
+#
+# 安装（请用 python -m pip，勿用 zijinhua/bin/pip，其 shebang 仍指向 easyr1）:
+#   /data/conda/envs/zijinhua/bin/python -m pip install -r requirements.txt
+#
+# 推理服务（vLLM / SGLang）与浏览器、搜索代理请单独部署，见 external/ 与文档。
+
+# --- 核心 HTTP（services/search_client、browser_client）---
+requests==2.32.5
+
+# --- 记忆模块：BGE 文本 + CLIP 图像多模态召回（memory.py）---
+numpy==2.2.6
+scipy==1.15.3
+torch==2.8.0
+transformers==4.56.2
+Pillow==12.1.1
+sentence-transformers==5.5.0
+scikit-learn==1.7.2
+joblib==1.5.3
+accelerate==1.12.0
+safetensors==0.7.0
+tokenizers==0.22.2
+regex==2026.1.15
+filelock==3.24.2
+tqdm==4.67.3
+
+# --- 评测与数据集（scripts/eval_benchmark.py）---
+datasets==4.5.0
+huggingface_hub==0.36.2
+
+# --- 可选脚本 ---
+modelscope==1.30.0  # scripts/download_qwen35_9b.py
+
+# --- 外部子服务（按需安装，版本见各子目录 requirements.txt）---
+# browser-service: fastapi, uvicorn, playwright, python-dotenv
+#   → external/browser-service/requirements.txt
+# search-proxy / harness: openai, rank_bm25
+#   → external/harness-sii/requirements.txt

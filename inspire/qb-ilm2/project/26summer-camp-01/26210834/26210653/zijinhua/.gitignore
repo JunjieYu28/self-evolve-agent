@@ -1,0 +1,24 @@
+# 密钥与运行时产物
+.env
+agent_memory.json
+logs/
+.vllm_cache/
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.DS_Store
+
+# 数据集（体积大）
+data/
+
+# 虚拟环境
+.venv/
+venv/
+**/.venv/
+
+# IDE
+.idea/
+.vscode/
+
+# 外部服务内嵌 venv
+external/**/.venv/

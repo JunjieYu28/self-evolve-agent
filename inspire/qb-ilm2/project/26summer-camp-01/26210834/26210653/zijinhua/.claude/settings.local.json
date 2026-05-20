@@ -1,0 +1,41 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(conda --version)",
+      "Bash(conda env *)",
+      "Bash(conda run *)",
+      "Bash(nvidia-smi --query-gpu=name,memory.total --format=csv,noheader)",
+      "Read(//data/jcy/**)",
+      "Read(//inspire/qb-ilm2/project/26summer-camp-01/26210834/26210653/**)",
+      "Bash(nvidia-smi)",
+      "Read(//opt/conda/envs/zijinhua/**)",
+      "Read(//root/.pip/**)",
+      "Read(//etc/**)",
+      "Read(//opt/conda/**)",
+      "Read(//root/.config/pip/**)",
+      "Bash(conda create *)",
+      "Bash(curl -s --max-time 10 http://127.0.0.1:8001/v1/models)",
+      "Bash(curl -s --max-time 10 http://127.0.0.1:8004/v1/models)",
+      "Bash(curl -s --max-time 10 http://127.0.0.1:8090/health)",
+      "Bash(curl -s --max-time 15 -X POST 'https://google.serper.dev/search' -H 'X-API-KEY: 1d43acbfcc6dead0df1fe015ce6184743ea668e7' -H 'Content-Type: application/json' -d '{\"q\":\"test\",\"num\":1}')",
+      "Bash(curl -s --max-time 15 'https://r.jina.ai/https://example.com' -H 'Authorization: Bearer jina_27b632dc368a4d878d77a086367a1493HIydGZpZQJhxBWjflZBGmr89R44M' -H 'Accept: text/plain')",
+      "Bash(curl -s --max-time 15 -X POST 'http://gw-bzokqkvr2cblz8ok6y.cn-wulanchabu-acdr-1.pai-eas.aliyuncs.com/api/predict/qwen_35_9b' -H \"Authorization: Yzk2YjgwZjM5YmMyYTJkMDU5ZjdiZmNhYTMxMzU3MzM0MzMxNDU3Yg==\" -H 'Content-Type: application/json' -d '{\"model\":\"qwen_35_9b\",\"messages\":[{\"role\":\"user\",\"content\":\"hi\"}],\"max_tokens\":5}')",
+      "Bash(curl -s --max-time 15 -X POST 'http://gw-bzokqkvr2cblz8ok6y.cn-wulanchabu-acdr-1.pai-eas.aliyuncs.com/api/predict/qwen_35_9b/v1/chat/completions' -H \"Authorization: Yzk2YjgwZjM5YmMyYTJkMDU5ZjdiZmNhYTMxMzU3MzM0MzMxNDU3Yg==\" -H 'Content-Type: application/json' -d '{\"model\":\"qwen_35_9b\",\"messages\":[{\"role\":\"user\",\"content\":\"hi\"}],\"max_tokens\":5}')",
+      "Bash(curl -s --max-time 15 'https://tmpfiles.org/api/v1/upload' -F 'file=@/inspire/qb-ilm2/project/26summer-camp-01/26210834/26210653/zijinhua/requirements.txt')",
+      "Bash(curl -sv --max-time 15 'https://tmpfiles.org/api/v1/upload' -F 'file=@/inspire/qb-ilm2/project/26summer-camp-01/26210834/26210653/zijinhua/requirements.txt')",
+      "Bash(curl -s --max-time 10 http://127.0.0.1:8080/health)",
+      "Bash(curl *)",
+      "Bash(python3 -m json.tool)",
+      "Bash(PLAYWRIGHT_BROWSERS_PATH=.playwright-browsers conda run *)",
+      "Bash(PLAYWRIGHT_BROWSERS_PATH=/inspire/qb-ilm2/project/26summer-camp-01/26210834/26210653/zijinhua/.playwright-browsers conda run *)",
+      "Bash(python3 -c \"import sys,json;d=json.load\\(sys.stdin\\);print\\(d.get\\('status_code'\\),d.get\\('image',{}\\).get\\('url',''\\)[:80] if d.get\\('image'\\) else d.get\\('error',{}\\).get\\('message',''\\)\\)\")",
+      "Bash(cp /inspire/qb-ilm2/project/26summer-camp-01/26210834/26210653/newest/launch_2wiki_9b_9b_refl_no_gold.sh /inspire/qb-ilm2/project/26summer-camp-01/26210834/26210653/zijinhua/scripts/)",
+      "Bash(cp /inspire/qb-ilm2/project/26summer-camp-01/26210834/26210653/newest/launch_simplevqa_9b_9b_refl_no_gold.sh /inspire/qb-ilm2/project/26summer-camp-01/26210834/26210653/zijinhua/scripts/)",
+      "Bash(cp /inspire/qb-ilm2/project/26summer-camp-01/26210834/26210653/newest/launch_simplevqa_9b_baseline.sh /inspire/qb-ilm2/project/26summer-camp-01/26210834/26210653/zijinhua/scripts/)",
+      "Bash(cp /inspire/qb-ilm2/project/26summer-camp-01/26210834/26210653/newest/run_simplevqa_9b_baseline.py /inspire/qb-ilm2/project/26summer-camp-01/26210834/26210653/zijinhua/scripts/)",
+      "Bash(sed -i 's|/data/conda/envs/zijinhua/bin/python|/opt/conda/envs/zijinhua/bin/python|g' launch_simplevqa_9b_baseline.sh)",
+      "Bash(sed -i 's|source /data/jcy/set_proxy.sh|source \"${ROOT}/scripts/set_proxy.sh\"|g; s|if \\\\[[ -f /data/jcy/set_proxy.sh \\\\]\\\\]|if [[ -f \"${ROOT}/scripts/set_proxy.sh\" ]]|g' launch_simplevqa_9b_9b_refl_no_gold.sh)",
+      "Bash(chmod +x /inspire/qb-ilm2/project/26summer-camp-01/26210834/26210653/zijinhua/scripts/launch_2wiki_9b_9b_refl_no_gold.sh /inspire/qb-ilm2/project/26summer-camp-01/26210834/26210653/zijinhua/scripts/launch_simplevqa_9b_9b_refl_no_gold.sh /inspire/qb-ilm2/project/26summer-camp-01/26210834/26210653/zijinhua/scripts/launch_simplevqa_9b_baseline.sh)"
+    ]
+  }
+}
