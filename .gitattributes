@@ -5,3 +5,6 @@
 *.parquet filter=lfs diff=lfs merge=lfs -text
 *.zip filter=lfs diff=lfs merge=lfs -text
 *.jsonl filter=lfs diff=lfs merge=lfs -text
+group_4/code/.playwright-browsers/chromium-1148/chrome-linux/chrome filter=lfs diff=lfs merge=lfs -text
+group_4/code/.playwright-browsers/chromium_headless_shell-1148/chrome-linux/headless_shell filter=lfs diff=lfs merge=lfs -text
+group_4/code/data/2WikiMultihopQA/jsonl/train.jsonl filter=lfs diff=lfs merge=lfs -text
