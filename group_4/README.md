@@ -20,6 +20,37 @@ code/
 ├── logger.py                 # 结构化日志（results.jsonl + trajectory.jsonl）
 ├── main.py                   # 统一命令行入口
 │
+├── benchmark/                # V2 Pro Max Agent 打榜系统（9B+32B Teacher）
+│   ├── agent.py              # Pro Max Agent：工具清洁化 + 强制终结 + 上下文压缩 + Stuck 检测
+│   ├── config.py             # 集中配置（9B 推理 + 32B Teacher 规划/验证/反思）
+│   ├── benchmark_runner.py   # 打榜入口（带策略记忆进化）
+│   ├── batch_runner.py       # 批量评测 + 跨任务进化（共享 MemoryStore）
+│   ├── quick_test.py         # 快速验证（指定 index 子集）
+│   ├── roles.py              # 消息角色枚举
+│   ├── trajectory.py         # 轨迹记录
+│   ├── start_8_instances.sh  # 多实例启动脚本
+│   ├── check_instances.sh    # 实例健康检查
+│   ├── modules/              # 模块化组件
+│   │   ├── compaction.py     # 动态上下文压缩（防 token 爆炸）
+│   │   ├── memory.py         # 策略记忆存储与召回
+│   │   ├── planner.py        # 9B 任务规划
+│   │   ├── planner_32b.py    # 32B Teacher 规划
+│   │   ├── prompt_builder.py # Prompt 动态构建
+│   │   ├── question_guidance.py  # 题型指导
+│   │   ├── reflection.py     # 9B 反思模块
+│   │   ├── reflector_32b.py  # 32B Teacher 反思
+│   │   ├── search_lessons.py # 搜索经验总结
+│   │   ├── search_skill.py   # 搜索技能抽象
+│   │   ├── teacher_client.py # 32B Teacher 统一客户端
+│   │   └── verifier_32b.py   # 32B 答案验证器
+│   ├── tools/                # 工具实现
+│   │   └── search_tool.py    # search_text / search_image / fetch_url
+│   ├── memory_data/          # 策略记忆持久化
+│   │   └── strategies.json   # 积累的解题策略
+│   └── results/              # 评测结果输出
+│       ├── benchmark/        # 正式打榜结果
+│       └── pro_full/         # 全量评测（2Wiki + SimpleVQA 轨迹）
+│
 ├── services/                 # 外部服务接入层
 │   ├── search_client.py      # search-proxy HTTP 客户端
 │   ├── search_tools.py       # search_text / search_image 工具实现
@@ -293,6 +324,66 @@ Agent 输出最终答案?
 | `none` (纯推理) | `--mode none --tools none` | 关 | 关 | 无 |
 | `search` (搜索基线) | `--mode none --tools search` | 关 | 关 | search_text |
 | `full` (完整进化) | `--mode full --tools search` | 开 | 开 | search_text + search_image |
+
+---
+
+## V2 Pro Max Agent 打榜系统 (`benchmark/`)
+
+### 架构概述
+
+V2 Pro Max Agent 是面向正式打榜场景的增强版本，采用 **9B 推理 + 32B Teacher** 的分层架构，在 V1 基础上引入以下核心改进：
+
+| 改进项 | 描述 |
+|--------|------|
+| **工具调用清洁化** | 自动去除 XML 重复、限制单步/单任务工具调用次数 |
+| **强制终结答案** | 永不返回空答案，步数耗尽时强制生成最终回答 |
+| **动态上下文压缩** | 集成 Compactor 模块，token 超阈值时自动压缩历史对话 |
+| **自适应步数预算** | 根据任务难度动态调整最大推理步数 |
+| **Stuck 检测** | 检测重复搜索模式，自动干预避免死循环 |
+| **32B Teacher 协同** | 规划（Planner）、验证（Verifier）、反思（Reflector）三路 32B 协同 |
+| **跨任务策略进化** | 共享 MemoryStore 跨任务积累解题策略 |
+
+### 模型分工
+
+| 角色 | 模型 | 端口 | 用途 |
+|------|------|------|------|
+| 主推理 Agent | Qwen3.5-9B | `:8000` | ReAct 推理、工具调用 |
+| Teacher 规划 | Qwen3-32B | `:8001` | 任务分解、搜索策略制定 |
+| Teacher 验证 | Qwen3-32B | `:8001` | 答案可信度校验 |
+| Teacher 反思 | Qwen3-32B | `:8001` | 失败诊断、策略提取 |
+
+### 运行方式
+
+```bash
+# 正式打榜（100 题）
+cd code/benchmark
+python benchmark_runner.py
+
+# 批量评测（2Wiki / SimpleVQA）
+python batch_runner.py --dataset 2wiki --max-cases 100
+python batch_runner.py --dataset simpleVQA --output-dir results/pro_simpleVQA
+
+# 快速验证（指定 index 子集）
+python quick_test.py
+
+# 仅评分（不重跑）
+python batch_runner.py --eval-only --output-dir results/pro_2wiki
+```
+
+### 关键配置 (`benchmark/config.py`)
+
+| 环境变量 | 默认值 | 说明 |
+|----------|--------|------|
+| `MAX_STEPS` | `8` | 最大推理步数 |
+| `MAX_TOKENS` | `10000` | 单次 LLM 输出上限 |
+| `TEACHER_ENABLED` | `1` | 启用 32B Teacher |
+| `TEACHER_PLANNER_ENABLED` | `1` | 启用 32B 规划 |
+| `TEACHER_VERIFIER_ENABLED` | `0` | 启用 32B 验证（默认关） |
+| `TEACHER_REFLECTOR_ENABLED` | `1` | 启用 32B 反思 |
+| `COMPACTION_TOKEN_THRESHOLD` | `20000` | 上下文压缩触发阈值 |
+| `MEMORY_TOP_K` | `3` | 策略记忆召回数 |
+| `STUCK_THRESHOLD` | `3` | Stuck 检测阈值 |
+| `MAX_TOOL_CALLS_PER_TASK` | `8` | 单任务工具调用上限 |
 
 ---
 
